@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import PokemonList from './features/PokemonList';
+import PokemonDetails from './features/PokemonDetails';
 import './App.css';
+import { useGetPokemonListQuery } from './services/pokemon';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
 
-function App() {
+const App = () => {
+  const [selectedPokemon, setSelectedPokemon] = useState('');
+  const { data: pokemonListData, isFetching } = useGetPokemonListQuery();
+
+  useEffect(() => {
+    if (!isFetching && pokemonListData && pokemonListData.results.length > 0 && !selectedPokemon) {
+      setSelectedPokemon(pokemonListData.results[0].name);
+    }
+  }, [pokemonListData, isFetching, selectedPokemon]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <Provider store={store}>
+
+    <div className="app-container">
+      <PokemonList onSelectPokemon={setSelectedPokemon} />
+      {selectedPokemon && <PokemonDetails selectedPokemon={selectedPokemon} />}
     </div>
+    </Provider>
   );
-}
+};
 
 export default App;
