@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import PokemonList from './features/PokemonList';
-import PokemonDetails from './features/PokemonDetails';
+import PokemonList from './components/PokemonList';
+import PokemonDetails from './components/PokemonDetails';
 import './App.css';
-import { useGetPokemonListQuery } from './services/pokemon';
+import { useGetPokemonListQuery } from './api/pokemon';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
 
@@ -16,12 +16,18 @@ const App = () => {
     }
   }, [pokemonListData, isFetching, selectedPokemon]);
 
+  const handleSelectPokemon = (pokemon: string) => {
+    window.history.pushState({}, '', `/pokemon/${pokemon}`);
+    window.scrollTo(0, 0);
+    setSelectedPokemon(pokemon);
+  };
+
   return (
     <Provider store={store}>
 
     <div className="app-container">
-      <PokemonList onSelectPokemon={setSelectedPokemon} />
-      {selectedPokemon && <PokemonDetails selectedPokemon={selectedPokemon} />}
+    {selectedPokemon && <PokemonDetails selectedPokemon={selectedPokemon} />}
+      <PokemonList onSelectPokemon={handleSelectPokemon} />
     </div>
     </Provider>
   );

@@ -1,8 +1,9 @@
 import React from "react";
-import { useGetPokemonListQuery } from "../services/pokemon";
+import { useGetPokemonListQuery } from "../api/pokemon";
 import Header from "../app/components/Header";
 import { Provider } from "react-redux";
 import { store } from "../app/store";
+
 interface PokemonListProps {
   onSelectPokemon: (pokemon: string) => void;
 }
@@ -10,14 +11,14 @@ interface PokemonListProps {
 const PokemonList: React.FC<PokemonListProps> = ({ onSelectPokemon }) => {
   const { data, error, isLoading } = useGetPokemonListQuery();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>An error has occurred</div>;
+  if (isLoading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">An error has occurred</div>;
 
   return (
     <Provider store={store}>
       <div className="list-container" data-testid="pokemon-list">
         <Header title="PokeReact" />
-        <ul>
+        <ul className="pokemon-list">
           {data?.results.map((pokemon) => (
             <li
               key={pokemon.name}
